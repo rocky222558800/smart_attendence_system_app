@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Students collection
+    match /students/{rollNo} {
+      allow read: if true; // Allow reading student info for face matching and login
+      allow create: if true; // Allow first-time registration
+      allow update: if true; // Allow updating face descriptor or password
+    }
+
+    // Teachers collection
+    match /teachers/{teacherId} {
+      allow read: if true; // Allow reading teacher info for login
+      allow create: if true; // Allow teacher registration
+      allow update: if true;
+    }
+
+    // Sessions collection
+    match /sessions/{sessionId} {
+      allow read: if true; // Allow students to read session info for attendance
+      allow create, update, delete: if true; // Allow teachers to manage sessions
+    }
+
+    // Attendance collection
+    match /attendance/{attendanceId} {
+      allow read: if true; // Allow students and teachers to read attendance records
+      allow create: if true; // Allow students to mark attendance
+      allow update, delete: if true; // Allow teachers to manage attendance
+    }
+
+    // Test connection match
+    match /test/connection {
+      allow read: if true;
+    }
+  }
+}

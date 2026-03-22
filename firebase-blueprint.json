@@ -1,0 +1,79 @@
+{
+  "entities": {
+    "student": {
+      "title": "Student",
+      "description": "Student profile with face descriptor for attendance.",
+      "type": "object",
+      "properties": {
+        "rollNo": { "type": "string", "description": "Unique roll number." },
+        "name": { "type": "string", "description": "Full name." },
+        "email": { "type": "string", "description": "Email for alerts." },
+        "phone": { "type": "string", "description": "Phone number for alerts." },
+        "password": { "type": "string", "description": "Login password." },
+        "faceDescriptor": { "type": "array", "items": { "type": "number" }, "description": "Face descriptor for matching." },
+        "photoUrl": { "type": "string", "description": "Profile photo URL." }
+      },
+      "required": ["rollNo", "password", "name"]
+    },
+    "teacher": {
+      "title": "Teacher",
+      "description": "Teacher profile.",
+      "type": "object",
+      "properties": {
+        "teacherId": { "type": "string", "description": "Unique teacher ID." },
+        "name": { "type": "string", "description": "Full name." },
+        "email": { "type": "string", "description": "Email address." },
+        "password": { "type": "string", "description": "Login password." }
+      },
+      "required": ["teacherId", "password", "name"]
+    },
+    "session": {
+      "title": "Attendance Session",
+      "description": "A session created by a teacher for students to mark attendance.",
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string", "description": "Unique session ID." },
+        "teacherId": { "type": "string", "description": "ID of the teacher who created it." },
+        "name": { "type": "string", "description": "Session name (e.g., Math Class)." },
+        "qrCodeData": { "type": "string", "description": "Dynamic QR code data." },
+        "location": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" },
+            "radius": { "type": "number", "description": "Permitted radius in meters." }
+          }
+        },
+        "active": { "type": "boolean", "description": "Whether the session is currently open for attendance." },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["sessionId", "teacherId", "name", "qrCodeData", "active"]
+    },
+    "attendance": {
+      "title": "Attendance Record",
+      "description": "A record of a student's attendance for a session.",
+      "type": "object",
+      "properties": {
+        "attendanceId": { "type": "string", "description": "Unique record ID." },
+        "studentId": { "type": "string", "description": "Roll number of the student." },
+        "sessionId": { "type": "string", "description": "ID of the session." },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "location": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        },
+        "status": { "type": "string", "enum": ["present", "absent"] }
+      },
+      "required": ["attendanceId", "studentId", "sessionId", "timestamp", "status"]
+    }
+  },
+  "firestore": {
+    "/students/{rollNo}": { "schema": "student", "description": "Collection of students." },
+    "/teachers/{teacherId}": { "schema": "teacher", "description": "Collection of teachers." },
+    "/sessions/{sessionId}": { "schema": "session", "description": "Collection of attendance sessions." },
+    "/attendance/{attendanceId}": { "schema": "attendance", "description": "Collection of attendance records." }
+  }
+}

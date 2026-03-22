@@ -1,0 +1,5 @@
+{
+  "name": "Smart Attendance System",
+  "description": "A QR code and face-recognition based attendance system for students and teachers.",
+  "requestFramePermissions": ["camera", "geolocation"]
+}
